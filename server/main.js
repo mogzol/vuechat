@@ -11,8 +11,8 @@ app.get('/', (req, res) => res.send('Hello World!'))
 
 function addMessage(room, username, message) {
     const timestamp = Date.now();
-    const message = { username, message, timestamp };
-    room.messages.push(message);
+    const messageData = { username, message, timestamp };
+    room.messages.push(messageData);
 
     // Rooms only hold a max of 256 messages. Trim the oldest
     if (room.messages.length > 256) {
@@ -77,7 +77,7 @@ app.ws('/connect', (ws, req) => {
 
         // Then handle the message
         switch (msg.type) {
-            case 'join':
+            case 'join': {
                 const roomName = msg.room;
                 if (typeof roomName !== 'string' || roomName.length > 20) {
                     ws.send({ type: 'error', message: 'Invalid room (max length: 20)' });
@@ -110,8 +110,8 @@ app.ws('/connect', (ws, req) => {
                 updateRoom(room);
 
                 return;
-
-            case 'message':
+            }
+            case 'message': {
                 const room = rooms[thisUser.room];
                 if (room === undefined) {
                     ws.send({ type: 'error', message: 'You are not in a room.' });
@@ -128,6 +128,7 @@ app.ws('/connect', (ws, req) => {
                 updateRoom(room);
 
                 return;
+            }
         }
     });
 
