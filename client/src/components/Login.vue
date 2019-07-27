@@ -1,14 +1,24 @@
 <template>
   <div class="login">
     <label for="username">Please enter a username:</label>
-    <input type="text" name="username" />
-    <input type="button" value="Submit" />
+    <input type="text" v-model="username" :enabled="loading" name="username" />
+    <input type="button" v-on:click="login" value="Submit" />
   </div>
 </template>
 
 <script>
 export default {
   name: 'Login',
+  data: () => ({
+    username: '',
+    loading: false,
+  }),
+  methods: {
+    login() {
+      this.loading = true;
+      this.$store.dispatch('login', this.username);
+    },
+  },
 };
 </script>
 

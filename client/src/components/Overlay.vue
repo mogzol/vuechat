@@ -14,10 +14,10 @@ export default {
     Login,
   },
   computed: {
-    visible: function visible() {
-      return !this.username || this.error;
+    visible() {
+      return !this.connected || !this.username || this.error;
     },
-    ...mapState(['username', 'error']),
+    ...mapState(['username', 'connected', 'error']),
   },
 };
 </script>

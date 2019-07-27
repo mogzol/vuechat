@@ -39,22 +39,24 @@ function updateRoom(room) {
     };
 
     for (const [username, user] of Object.entries(room.users)) {
-        user.ws.send({ type: 'room', data: roomData });
+        user.ws.send(JSON.stringify({ type: 'room', data: roomData }));
     }
 }
 
 app.ws('/connect', (ws, req) => {
     ws.on('message', msg => {
+        msg = JSON.parse(msg);
+
         // Handle initial connection
         if (msg.type === 'init' && ws._username === undefined) {
             const username = msg.username;
-            if (typeof username !== 'string' || username.length > 20) {
-                ws.send({ type: 'error', message: 'Username invalid (max length: 20)' });
+            if (typeof username !== 'string' || username.length > 20 || username.length < 3) {
+                ws.send(JSON.stringify({ type: 'error', message: 'Username invalid (max length: 20, min length: 3)' }));
                 return;
             }
 
             if (users[username] !== undefined) {
-                ws.send({ type: 'error', message: 'Username already taken' });
+                ws.send(JSON.stringify({ type: 'error', message: 'Username already taken' }));
                 return;
             }
 
@@ -64,12 +66,12 @@ app.ws('/connect', (ws, req) => {
                 room: null,
             }
             ws._username = username;
-            ws.send({ type: 'success', message: 'Connected' });
+            ws.send(JSON.stringify({ type: 'login', username: username }));
             return;
         }
 
         // First we get the user for this websocket
-        const thisUser = this.users[ws._username];
+        const thisUser = users[ws._username];
         if (thisUser === undefined) {
             ws.close(1, 'Unknown client');
             return;
@@ -79,8 +81,8 @@ app.ws('/connect', (ws, req) => {
         switch (msg.type) {
             case 'join': {
                 const roomName = msg.room;
-                if (typeof roomName !== 'string' || roomName.length > 20) {
-                    ws.send({ type: 'error', message: 'Invalid room (max length: 20)' });
+                if (typeof roomName !== 'string' || roomName.length > 20 || roomName.length < 3) {
+                    ws.send(JSON.stringify({ type: 'error', message: 'Invalid room (max length: 20, min length: 3)' }));
                     return;
                 }
 
@@ -91,7 +93,7 @@ app.ws('/connect', (ws, req) => {
                 const room = rooms[roomName];
 
                 if (room.users[thisUser.username]) {
-                    ws.send({ type: 'error', message: 'You are already in this room' });
+                    ws.send(JSON.stringify({ type: 'error', message: 'You are already in this room' }));
                     return;
                 }
 
@@ -114,13 +116,13 @@ app.ws('/connect', (ws, req) => {
             case 'message': {
                 const room = rooms[thisUser.room];
                 if (room === undefined) {
-                    ws.send({ type: 'error', message: 'You are not in a room.' });
+                    ws.send(JSON.stringify({ type: 'error', message: 'You are not in a room.' }));
                     return;
                 }
 
                 const message = msg.message;
                 if (typeof message !== 'string' || message.length > 1000) {
-                    ws.send({ type: 'error', message: 'Invalid message (max length: 1000)' });
+                    ws.send(JSON.stringify({ type: 'error', message: 'Invalid message (max length: 1000)' }));
                     return;
                 }
 
@@ -133,11 +135,11 @@ app.ws('/connect', (ws, req) => {
     });
 
     ws.on('close', () => {
-        if (ws._username === undefined || this.users[ws._username] === undefined) {
+        if (ws._username === undefined || users[ws._username] === undefined) {
             return;
         }
 
-        const thisUser = this.users[ws._username];
+        const thisUser = users[ws._username];
         
         // If the user is in a room, remove them
         if (thisUser.room != null && rooms[thisUser.room] !== undefined) {
@@ -148,7 +150,7 @@ app.ws('/connect', (ws, req) => {
         }
 
         // Delete the user
-        delete this.users[thisUser.username];
+        delete users[thisUser.username];
     })
 })
 

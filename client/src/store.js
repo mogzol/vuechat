@@ -29,11 +29,37 @@ export default new Vuex.Store({
     users: {},
     username: null,
     error: null,
+    connected: false,
   },
   mutations: {
+    SOCKET_ONOPEN(state, event) {
+      Vue.prototype.$socket = event.currentTarget;
+      state.connected = true;
+    },
+    SOCKET_ONCLOSE(state, event) {
+      console.log('socket closed', event);
+      state.connected = false;
+    },
+    SOCKET_ONERROR(state, event) {
+      console.error(state, event);
+    },
+    SOCKET_ONMESSAGE(state, message) {
+      console.log(message);
 
+      switch (message.type) {
+        case 'login':
+          state.connected = true;
+          state.username = message.username;
+          break;
+        default:
+          break;
+      }
+    },
   },
   actions: {
-
+    login(context, username) {
+      const message = { type: 'init', username };
+      Vue.prototype.$socket.sendObj(message);
+    },
   },
 });
