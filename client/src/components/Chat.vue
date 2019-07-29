@@ -1,10 +1,13 @@
 <template>
   <div class="chat-box">
     <div class="messages">
-      <div v-for="message in messages" v-bind:key="message.id" class="message">
+      <div v-for="message in messages" v-bind:key="message.id" class="message"
+           v-bind:class="{ 'status': message.username === null }">
+
         <div class="username">{{ message.username }}</div>
         <div class="timestamp">{{ formatDate(message.timestamp) }}</div>
         <div class="message-text">{{ message.message }}</div>
+
       </div>
     </div>
     <div class="input-area">
@@ -54,7 +57,7 @@ export default {
 
       .username {
         font-weight: 600;
-        padding: 0 15px;
+        padding: 0 10px 0 15px;
       }
 
       .timestamp {
@@ -64,7 +67,18 @@ export default {
       }
 
       .message-text {
-        padding: 8px 17px 15px;
+        padding: 10px 15px 18px;
+      }
+    }
+
+    .message.status {
+      .username {
+        padding-right: 0;
+      }
+
+      .message-text {
+        font-style: italic;
+        color: $secondary;
       }
     }
   }

@@ -1,8 +1,8 @@
 <template>
   <div class="chat-input">
     <div class="combined-holder">
-      <input type="text" />
-      <input type="button" value="Send" />
+      <input v-model="message" v-on:keyup.enter="send" type="text" />
+      <input type="button" value="Send" v-on:click="send"/>
     </div>
   </div>
 </template>
@@ -10,6 +10,17 @@
 <script>
 export default {
   name: 'ChatInput',
+  data: () => ({
+    message: '',
+  }),
+  methods: {
+    send() {
+      if (this.message.length > 0) {
+        this.$store.dispatch('sendMessage', this.message);
+        this.message = '';
+      }
+    },
+  },
 };
 </script>
 
@@ -29,7 +40,7 @@ export default {
     input[type="text"] {
       border-radius: 10px 0 0 10px;
       border: 2px solid $lighter;
-      border-right: none;
+      border-right-width: 0;
       background: $darker;
       flex-grow: 1;
       color: $foreground;
@@ -38,18 +49,30 @@ export default {
       &:focus {
         outline: none;
         border-color: $lightest;
-        box-shadow: 0 0 5pt 0pt darken($dark, 3%);
+        box-shadow: 0 0 5px 0px darken($dark, 3%);
       }
     }
 
     input[type="button"] {
       border-radius: 0 10px 10px 0;
       color: $foreground;
-      padding: 0 10px;
+      padding: 0 30px;
       border: 0;
       background: $lighter;
       flex-grow: 0;
       flex-shrink: 0;
+
+      &:hover {
+        background: $lightest;
+      }
+
+      &:focus {
+        outline: none;
+      }
+
+      &:active {
+        background: $lighter;
+      }
     }
   }
 }

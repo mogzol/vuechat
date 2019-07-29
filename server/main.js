@@ -7,7 +7,7 @@ let curId = 1;
 const users = {};
 const rooms = {};
 
-app.get('/', (req, res) => res.send('Hello World!'))
+app.get('/', (req, res) => res.send('Hello World!'));
 
 function addMessage(room, username, message) {
     const timestamp = Date.now();
@@ -126,7 +126,14 @@ app.ws('/connect', (ws, req) => {
                     return;
                 }
 
-                addMessage(room, thisUser.username, message);
+                // Special case, if message is '/clear', clear the room's messages
+                if (message === '/clear') {
+                    room.messages = [];
+                    addMessage(room, null, `${thisUser.username} cleared the chat`);
+                } else {
+                    addMessage(room, thisUser.username, message);
+                }
+                
                 updateRoom(room);
 
                 return;

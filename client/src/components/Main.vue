@@ -4,7 +4,17 @@
       VueChat
     </div>
     <div class="content">
-      <div class="rooms">Rooms (unimplemented)</div>
+      <div class="rooms">
+        Rooms (unimplemented)
+
+        <!-- For now we'll put some info in this sidebar -->
+        <br><br><br>
+        Welcome to VueChat
+        <br><br>
+        Currently chat window scrolling (and a bunch of other stuff) doesn't work.
+        <br><br>
+        You can send a '/clear' message to clear the chat.
+      </div>
       <div class="chat">
         <Chat />
       </div>
@@ -14,12 +24,23 @@
 </template>
 
 <script>
+import { mapState } from 'vuex';
 import Chat from './Chat.vue';
 
 export default {
   name: 'Main',
   components: {
     Chat,
+  },
+  computed: mapState(['username']),
+  watch: {
+    // Until rooms are implemented, just connect to main room when we login
+    username(newVal, oldVal) {
+      if (oldVal === null && newVal !== null) {
+        console.log('Joining main room...');
+        this.$store.dispatch('joinRoom', 'main');
+      }
+    },
   },
 };
 </script>

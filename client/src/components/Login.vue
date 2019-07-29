@@ -1,21 +1,25 @@
 <template>
-  <div class="login">
+  <div>
     <label for="username">Please enter a username:</label>
-    <input type="text" v-model="username" :enabled="loading" name="username" />
-    <input type="button" v-on:click="login" value="Submit" />
+
+    <input type="text" v-on:keyup.enter="login" v-model="username" name="username"
+           :disabled="!connected || loading" />
+
+    <input type="button" value="Submit" v-on:click="login" :disabled="!connected || loading"/>
   </div>
 </template>
 
 <script>
+import { mapState } from 'vuex';
+
 export default {
   name: 'Login',
   data: () => ({
     username: '',
-    loading: false,
   }),
+  computed: mapState(['connected', 'loading']),
   methods: {
     login() {
-      this.loading = true;
       this.$store.dispatch('login', this.username);
     },
   },
@@ -25,25 +29,14 @@ export default {
 <style scoped lang="scss">
 @import '../scss/base.scss';
 
-.login {
-  width: 90%;
-  max-width: 500px;
-  height: 200px;
-  background: $dark;
-  border-radius: 5px;
-  border: 2px solid $darker;
-  text-align: center;
-  padding: 50px;
-  box-sizing: border-box;
+label {
+  display: block;
+  font-size: 1.3em;
+  margin-bottom: 20px;
+  margin-top: 10px;
+}
 
-  label {
-    display: block;
-    font-size: 1.3em;
-    margin-bottom: 20px;
-  }
-
-  input[type="text"] {
-    margin-right: 10px;
-  }
+input[type="text"] {
+  margin-right: 10px;
 }
 </style>

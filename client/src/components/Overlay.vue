@@ -1,16 +1,19 @@
 <template>
   <div class="overlay" v-if="visible">
-    <Login v-if="!username" />
+    <Error v-if="error" class="overlay-popup"/>
+    <Login v-if="!error && !username" class="overlay-popup"/>
   </div>
 </template>
 
 <script>
 import { mapState } from 'vuex';
+import Error from './Error.vue';
 import Login from './Login.vue';
 
 export default {
   name: 'Overlay',
   components: {
+    Error,
     Login,
   },
   computed: {
@@ -33,5 +36,17 @@ export default {
   display: flex;
   align-items: center;
   justify-content: center;
+
+  .overlay-popup {
+    width: 90%;
+    max-width: 500px;
+    height: 200px;
+    background: $dark;
+    border-radius: 3px;
+    box-shadow: 0px 2px 10px 5px $darkest;
+    text-align: center;
+    padding: 50px;
+    box-sizing: border-box;
+  }
 }
 </style>
