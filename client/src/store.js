@@ -13,7 +13,6 @@ export default new Vuex.Store({
     error: null,
     connected: false,
     loading: false,
-    sendingMessage: false,
   },
   mutations: {
     SOCKET_ONOPEN(state, event) {
@@ -32,7 +31,7 @@ export default new Vuex.Store({
     SOCKET_ONMESSAGE(state, message) {
       console.log(message);
 
-      // Loading is set when we send a message, clear it when we recieve one
+      // Loading is set when we send a message, clear it when we receive one
       state.loading = false;
 
       switch (message.type) {
