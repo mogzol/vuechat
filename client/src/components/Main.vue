@@ -61,8 +61,9 @@ export default {
   }
 
   .content {
-    flex-grow: 1;
     display: flex;
+    flex-grow: 1;
+    min-height: 0;
 
     .rooms, .users {
       background: $darker;

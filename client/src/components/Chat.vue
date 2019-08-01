@@ -1,13 +1,11 @@
 <template>
   <div class="chat-box">
-    <div class="messages">
+    <div class="messages" ref="messages">
       <div v-for="message in messages" v-bind:key="message.id" class="message"
            v-bind:class="{ 'status': message.username === null }">
-
         <div class="username">{{ message.username }}</div>
         <div class="timestamp">{{ formatDate(message.timestamp) }}</div>
         <div class="message-text">{{ message.message }}</div>
-
       </div>
     </div>
     <div class="input-area">
@@ -32,6 +30,9 @@ export default {
       return date.toLocaleString();
     },
   },
+  updated() {
+    this.$refs.messages.scrollTop = this.$refs.messages.scrollHeight;
+  },
 };
 </script>
 
@@ -47,10 +48,15 @@ export default {
     display: flex;
     flex-grow: 1;
     flex-direction: column;
-    justify-content: flex-end;
+    overflow-y: auto;
     padding-bottom: 10px;
 
     .message {
+      &:first-child {
+        padding-top: 40px;
+        margin-top: auto;
+      }
+
       .username, .timestamp {
         display: inline-block;
       }

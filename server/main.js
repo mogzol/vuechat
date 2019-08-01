@@ -11,7 +11,8 @@ app.get('/', (req, res) => res.send('Hello World!'));
 
 function addMessage(room, username, message) {
     const timestamp = Date.now();
-    const messageData = { username, message, timestamp };
+    const id = curId++;
+    const messageData = { id, username, message, timestamp };
     room.messages.push(messageData);
 
     // Rooms only hold a max of 256 messages. Trim the oldest
