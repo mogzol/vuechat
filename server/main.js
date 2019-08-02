@@ -1,13 +1,13 @@
 const express = require('express');
 const app = express();
 const expressWs = require('express-ws')(app);
-const port = 3000;
+const port = process.env.VUECHAT_PORT || 3000;
 
 let curId = 1;
 const users = {};
 const rooms = {};
 
-app.get('/', (req, res) => res.send('Hello World!'));
+app.use('/', express.static('dist'));
 
 function addMessage(room, username, message) {
     const timestamp = Date.now();
@@ -162,4 +162,4 @@ app.ws('/connect', (ws, req) => {
     })
 })
 
-app.listen(port, () => console.log(`Example app listening on port ${port}!`))
+app.listen(port, () => console.log(`VueChat running on port ${port}!`))

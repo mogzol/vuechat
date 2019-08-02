@@ -5,7 +5,10 @@ import store from './store';
 
 Vue.config.productionTip = false;
 
-Vue.use(VueNativeSock, 'ws://localhost:3000/connect', { store, format: 'json' });
+const wsProtocol = location.protocol === 'https:' ? 'wss' : 'ws';
+const wsHost = location.host;
+
+Vue.use(VueNativeSock, `${wsProtocol}://${wsHost}/connect`, { store, format: 'json' });
 
 new Vue({
   store,

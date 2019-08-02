@@ -1,0 +1,8 @@
+version: '3'
+services:
+  vuechat:
+    build: .
+    restart: always
+    ports:
+      # Port defaults to 10100, set environment variable VUECHAT_PORT to change
+      - "${VUECHAT_PORT:-10100}:3000"
