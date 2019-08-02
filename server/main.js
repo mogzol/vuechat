@@ -27,12 +27,6 @@ function updateRoom(room) {
     // but I made this project to get more familiar with Vue, so I don't really care about the
     // server implementation
 
-    // Rooms only hold a max of 256 messages. Trim the oldest
-    if (room.messages.length > 256) {
-        const toRemove = room.messages.length - 256;
-        room.messages.splice(0, toRemove);
-    }
-
     const roomData = {
         name: room.roomName,
         users: room.users.map(user => user.username),
