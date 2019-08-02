@@ -11,7 +11,7 @@
         <br><br><br>
         Welcome to VueChat
         <br><br>
-        Currently chat window scrolling (and a bunch of other stuff) doesn't work.
+        This is a WIP. Some stuff doesn't work.
         <br><br>
         You can send a '/clear' message to clear the chat.
       </div>
